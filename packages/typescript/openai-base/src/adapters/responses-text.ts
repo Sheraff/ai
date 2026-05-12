@@ -346,14 +346,7 @@ export class OpenAICompatibleResponsesTextAdapter<
     }.bind(this)
 
     try {
-      const {
-        stream: _stream,
-        stream_options: _streamOptions,
-        tools: _tools,
-        ...cleanParams
-      } = requestParams as unknown as Record<string, unknown>
-      void _stream
-      void _streamOptions
+      const { tools: _tools, ...cleanParams } = requestParams
       void _tools
 
       chatOptions.logger.request(
@@ -363,10 +356,7 @@ export class OpenAICompatibleResponsesTextAdapter<
 
       const stream = await this.callResponseStream(
         {
-          ...(cleanParams as unknown as Omit<
-            OpenAI_SDK.Responses.ResponseCreateParamsStreaming,
-            'stream'
-          >),
+          ...cleanParams,
           stream: true,
           text: {
             format: {
