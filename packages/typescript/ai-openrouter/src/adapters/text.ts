@@ -161,6 +161,18 @@ export class OpenRouterTextAdapter<
     return reasoning ? { text: reasoning } : undefined
   }
 
+  /**
+   * `@openrouter/sdk` throws a proprietary `RequestAbortedError` on
+   * caller-initiated abort. Extend the base duck-type so the centralised
+   * `structuredOutputStream` finalisation yields `RUN_ERROR { code: 'aborted' }`
+   * for OpenRouter the same way it does for OpenAI/Grok/Groq.
+   */
+  protected override isAbortError(error: unknown): boolean {
+    if (super.isAbortError(error)) return true
+    if (!error || typeof error !== 'object') return false
+    return (error as { name?: unknown }).name === 'RequestAbortedError'
+  }
+
   // ────────────────────────────────────────────────────────────────────────
   // Message conversion — OpenRouter uses camelCase (`toolCallId`,
   // `toolCalls`, `imageUrl`, `inputAudio`, `videoUrl`). We override
