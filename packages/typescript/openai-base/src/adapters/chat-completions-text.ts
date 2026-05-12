@@ -251,7 +251,6 @@ export class OpenAICompatibleChatCompletionsTextAdapter<
     let accumulatedContent = ''
     let accumulatedReasoning = ''
     let hasEmittedTextMessageStart = false
-    let hasEmittedTextMessageEnd = false
     let reasoningMessageId: string | undefined
     let hasClosedReasoning = false
     let stepId: string | undefined
@@ -419,8 +418,7 @@ export class OpenAICompatibleChatCompletionsTextAdapter<
       // and SDK errors land in the catch block below.
       yield* closeReasoningLifecycle()
 
-      if (hasEmittedTextMessageStart && !hasEmittedTextMessageEnd) {
-        hasEmittedTextMessageEnd = true
+      if (hasEmittedTextMessageStart) {
         yield asChunk({
           type: 'TEXT_MESSAGE_END',
           messageId: aguiState.messageId,
@@ -488,9 +486,9 @@ export class OpenAICompatibleChatCompletionsTextAdapter<
         finishReason: 'stop',
         ...(lastUsage && {
           usage: {
-            promptTokens: lastUsage.prompt_tokens ?? 0,
-            completionTokens: lastUsage.completion_tokens ?? 0,
-            totalTokens: lastUsage.total_tokens ?? 0,
+            promptTokens: lastUsage.prompt_tokens,
+            completionTokens: lastUsage.completion_tokens,
+            totalTokens: lastUsage.total_tokens,
           },
         }),
       })
