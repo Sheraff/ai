@@ -3,7 +3,7 @@ linkWorkspacePackages: true
 preferWorkspacePackages: true
 blockExoticSubdeps: true
 trustPolicy: 'no-downgrade'
-minimumReleaseAge: 1
+minimumReleaseAge: 1440
 
 trustPolicyExclude:
   - 'chokidar@4.0.3' # existing transitive from sass/nitro; latest v4 with v5 available
